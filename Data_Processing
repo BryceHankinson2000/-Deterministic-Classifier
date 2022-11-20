@@ -1,0 +1,84 @@
+!wget https://github.com/daniel-e/mnist_octave/blob/master/mnist.mat?raw=true
+import scipy.io
+import numpy as np
+!mv mnist.mat?raw=true mnist.mat
+mat = scipy.io.loadmat('mnist.mat')
+import matplotlib.pyplot as plt
+
+
+trainX = mat['trainX'] #### train on this 
+trainY = np.squeeze(mat['trainY'])
+
+testX = mat['testX'] ### only evaluate on this 
+testY = np.squeeze(mat['testY'])
+
+# cosine and euclidean distance example
+
+A = trainX[6]
+B = trainX[8]
+cosine_distance = np.dot(A, B) / (np.linalg.norm(A, 2) * np.linalg.norm(B, 2))
+print("Cosine distance for 1s: ", cosine_distance)
+euclidean_distance = np.linalg.norm((A-B), 2)
+print("Euclidean distance 1s: ", euclidean_distance)
+
+
+A = trainX[0]
+B = trainX[1]
+cosine_distance = np.dot(A, B) / (np.linalg.norm(A, 2) * np.linalg.norm(B, 2))
+print("Cosine distance for 5 and 0: ", cosine_distance)
+euclidean_distance = np.linalg.norm((A-B), 2)
+print("Euclidean distance for 5 and 0: ", euclidean_distance)
+
+from scipy.spatial import distance_matrix
+def eumatrix(nr_train,nr_test):
+  deuc = np.zeros((nr_train, nr_test))
+  deuc = distance_matrix(trainX[:nr_train, :], testX[:nr_test, :])
+  return deuc
+ 
+from scipy.spatial import distance
+def comatrix(nr_train,nr_test):
+  dcos = np.zeros((nr_train, nr_test))
+  dcos = distance.cdist(trainX[:nr_train, :], testX[:nr_test, :],metric='cosine')
+  return dcos
+  
+ 
+# go through every column, and get the index of the smallest value
+def predictor(x,nr_test):
+  predictions = np.zeros(nr_test)
+  for test_ix in range(nr_test):
+    smallest_value_index = np.argsort(x[:, test_ix])
+    predictions[test_ix] = trainY[smallest_value_index[0]]
+
+  predictions = predictions.astype(np.int64)
+  return predictions
+  
+  
+def accuracy_func(predictions,nr_test):
+  diff = predictions - testY[:nr_test]
+  percentage_success_eu = (np.sum((diff == 0) * 1) / nr_test) * 100
+  return percentage_success_eu  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
