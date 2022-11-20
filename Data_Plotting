@@ -1,0 +1,70 @@
+import matplotlib.pyplot as plt
+
+def f(predictions_cosine,nr_test):
+  
+  confusion = np.zeros((10,10))
+  for ix in range(nr_test):
+    confusion[testY[ix],predictions_cosine[ix]] += 1
+    
+  confusion = np.multiply(confusion, 1 - np.eye(10))
+
+#plotting the confusion matrix 
+#plt.imshow(confusion)
+#plt.colorbar()
+
+
+#cosine fixed num of 200 test
+ratios = range(1,5000,500) 
+accs = []
+for ix in ratios:
+  matrix = comatrix(ix,200)
+  pred = predictor(matrix,200)
+  acc = accuracy_func(pred,200)
+  accs.append(acc)
+plt.plot(ratios,accs)
+
+
+#euclidean fixed num of 200 test
+ratios = range(1,5000,500) 
+accs = []
+for ix in ratios:
+  matrix = eumatrix(ix,200)
+  pred = predictor(matrix,200)
+  acc = accuracy_func(pred,200)
+  accs.append(acc)
+plt.plot(ratios,accs)
+
+
+#Accuracy as a function of number of testing samples, with a fixed number of 500
+#training samples. Notice the accuracy plateaus after about 2000 training images
+ratios = range(1,5000,500) 
+accs = []
+for ix in ratios:
+  matrix = eumatrix(500,ix)
+  pred = predictor(matrix,ix)
+  acc = accuracy_func(pred,ix)
+  accs.append(acc)
+plt.plot(ratios,accs)
+
+
+#cosine - #Accuracy as a function of number of testing samples, with a fixed number of 500
+#training samples. Notice the accuracy plateaus after about 2000 training images
+ratios = range(1,5000,500) 
+accs = []
+for ix in ratios:
+  matrix = comatrix(500,ix)
+  pred = predictor(matrix,ix)
+  acc = accuracy_func(pred,ix)
+  accs.append(acc)
+plt.plot(ratios,accs)
+
+
+matrix = comatrix(1000,200)
+pred = predictor(matrix,200)
+
+plt.bar(pred,testY[:200]/len(testY[:200]))
+
+
+
+
+
